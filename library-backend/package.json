@@ -1,0 +1,18 @@
+{
+  "name": "library-backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Viktoriia Beloborodova",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.5.0",
+    "graphql": "^16.13.2"
+  }
+}

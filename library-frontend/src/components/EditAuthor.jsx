@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 import Notify from './Notify'
 
-const EditAuthor = () => {
+const EditAuthor = ({ authors }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
@@ -14,11 +14,13 @@ const EditAuthor = () => {
 		},
     refetchQueries: [ { query: ALL_AUTHORS } ],
 		onCompleted: (data) => {
-      if (!data.editNumber) {
+      if (!data.editAuthor) {
         setErrorMessage('Author not found')
       }
     }
   })
+
+	const options = authors.map(author => ({ value: author.name, label: author.name }))
 
   const submit = async (event) => {
     event.preventDefault()
@@ -35,13 +37,17 @@ const EditAuthor = () => {
     <div>
       <h3>Set birth year</h3>
         <form onSubmit={submit}>
-					<div>
-            name
-            <input
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-            />
-          </div>
+					<select value={name} onChange={(e) => setName(e.target.value)}>
+						<option value="" disabled>
+							Select author
+						</option>
+						{options.map(option => (
+							<option key={option.value} value={option.value}>
+								{option.label}
+							</option>
+						))}
+					</select>
+
           <div>
             born
             <input

@@ -2,8 +2,8 @@ import { useQuery } from '@apollo/client/react'
 import { ALL_AUTHORS } from '../queries'
 import EditAuthor from './EditAuthor'
 
-const Authors = (props) => {
-  if (!props.show) {
+const Authors = ({ show, token }) => {
+  if (!show) {
     return null
   }
   const result = useQuery(ALL_AUTHORS)
@@ -33,7 +33,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <EditAuthor authors={authors} />
+      {token && <EditAuthor authors={authors} />}
     </div>
   )
 }

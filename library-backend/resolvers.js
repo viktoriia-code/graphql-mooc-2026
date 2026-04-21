@@ -13,7 +13,7 @@ const resolvers = {
         return Book.find({ author: args.author })
       }
       if (args.genre) {
-        return Book.find({ genres: { $in: [args.genre] } })
+        return Book.find({ genres: { $in: [args.genre] } }).populate('author')
       }
       return Book.find({}).populate('author')
     },

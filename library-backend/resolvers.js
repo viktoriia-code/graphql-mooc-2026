@@ -19,6 +19,12 @@ const resolvers = {
     },
     allAuthors: async (root, args) => { return Author.find({})},
     me: (root, args, context) => { return context.currentUser },
+    allGenres: async () => {
+      const books = await Book.find({});
+      const allGenres = new Set();
+      books.forEach(book => book.genres.forEach(genre => allGenres.add(genre)));
+      return Array.from(allGenres);
+    },
   },
   Author: {
     bookCount: async (root) => {
@@ -83,7 +89,8 @@ const resolvers = {
           }
         })
       }
-
+      
+      await book.populate('author')
       return book
     },
     editAuthor: async (root, args, context) => {

@@ -23,6 +23,12 @@ export const ALL_BOOKS = gql`
   }
 `
 
+export const ALL_GENRES = gql`
+  query {
+    allGenres
+  }
+`;
+
 export const ADD_BOOK = gql`
   mutation addBook(
     $title: String!, 
@@ -39,7 +45,6 @@ export const ADD_BOOK = gql`
       title
       author {
         name
-        born
       }
       published
       genres

@@ -21,7 +21,20 @@ const resolvers = {
       }
       return Book.find({}).populate('author')
     },
-    allAuthors: async (root, args) => { return Author.find({})},
+    allAuthors: async () => { 
+      const authors = await Author.find({})
+      const books = await Book.find({})
+
+      return authors.map(author => {
+        const count = books.filter(b => b.author.toString() === author._id.toString()).length
+
+        return {
+          ...author.toObject(),
+          id: author._id.toString(),
+          bookCount: count
+        }
+      })
+    },
     me: (root, args, context) => { return context.currentUser },
     allGenres: async () => {
       const books = await Book.find({});
@@ -29,11 +42,6 @@ const resolvers = {
       books.forEach(book => book.genres.forEach(genre => allGenres.add(genre)));
       return Array.from(allGenres);
     },
-  },
-  Author: {
-    bookCount: async (root) => {
-      return Book.countDocuments({ author: root._id })
-    }
   },
   Mutation: {
     addBook: async (root, args, context) => {

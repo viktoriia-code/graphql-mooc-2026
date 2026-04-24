@@ -3,14 +3,17 @@ import { ALL_AUTHORS } from '../queries'
 import EditAuthor from './EditAuthor'
 
 const Authors = ({ show, token }) => {
+  const result = useQuery(ALL_AUTHORS)
+  
   if (!show) {
     return null
   }
-  const result = useQuery(ALL_AUTHORS)
 
   if (result.loading) {
     return <div>loading...</div>
   }
+  
+  if (result.error) return <div>error: {result.error.message}</div>
 
   const authors = result.data.allAuthors
 

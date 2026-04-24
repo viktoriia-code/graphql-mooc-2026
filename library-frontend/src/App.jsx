@@ -6,6 +6,7 @@ import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
 import { BOOK_ADDED } from './queries'
+import { addBookToCache } from './utils/apolloCache'
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('library-user-token'))
@@ -25,6 +26,7 @@ const App = () => {
     onData: ({ data }) => {
       const addedBook = data.data.bookAdded
       alert(`${addedBook.title} added`)
+      addBookToCache(client.cache, addedBook)
     },
   })
 

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client/react'
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS, ALL_GENRES } from '../queries'
+import { ADD_BOOK, ALL_AUTHORS } from '../queries'
 import Notify from './Notify'
+import { addBookToCache } from '../utils/apolloCache'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -15,28 +16,7 @@ const NewBook = (props) => {
     refetchQueries: [{ query: ALL_AUTHORS }],
     update: (cache, response) => {
       const newBook = response.data.addBook;
-      // update all books cache without genre filter
-      cache.updateQuery({ query: ALL_BOOKS, variables: { genre: null } }, ({ allBooks }) => {
-        console.log("Updating cache for ALL_BOOKS without genre filter");
-        return { allBooks: [...allBooks, newBook]}
-      })
-
-      // also update genre-based books caches
-      newBook.genres.forEach(genre => {
-        console.log("Updating cache for ALL_BOOKS with genre: " + genre);
-        cache.updateQuery({ query: ALL_BOOKS, variables: { genre } }, (data) => {
-          if (!data) return { allBooks: [newBook] }
-          return { allBooks: [...data.allBooks, newBook] }
-        })
-      })
-
-      // update genres cache
-      cache.updateQuery({ query: ALL_GENRES }, (data) => {
-        if (!data) return
-        const newGenres = newBook.genres.filter(g => !data.allGenres.includes(g))
-        if (newGenres.length === 0) return data
-        return { allGenres: [...data.allGenres, ...newGenres] }
-      })
+      addBookToCache(cache, newBook);
     },
     onError: (error) => {
 			setErrorMessage(error.message)
